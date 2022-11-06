@@ -14,7 +14,7 @@ image:
 	docker build -t inacc-server:latest .
 
 run:
-	docker run --name inacc-server -p $(app_addr):$(app_port):8080 inacc-server:latest --port=$(app_port)
+	docker run --name inacc-server -p $(app_addr):$(app_port):8080 inacc-server:latest --addr=$(app_addr) --port=$(app_port)
     
 start:
 	docker start -i inacc-server

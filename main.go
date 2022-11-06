@@ -15,10 +15,10 @@ import (
 
 // NewServer helper function to inject logger and if everything else that it may be added in the future at handlers
 func NewServer(l *log.Logger, args *utils.Args) *http.Server {
-	pl := handlers.NewPtlistQuery(l)
+	th := handlers.NewTaskHandler(l)
 
 	sm := http.NewServeMux()
-	sm.Handle("/ptlist", pl)
+	sm.Handle("/ptlist", th)
 
 	address := fmt.Sprintf(":%s", args.Port)
 	fmt.Println(address)
