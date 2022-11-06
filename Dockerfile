@@ -11,4 +11,3 @@ COPY --from=builder /server/main .
 
 EXPOSE 8080
 ENTRYPOINT ["/server/main"]
-#CMD ["/server/main"]
