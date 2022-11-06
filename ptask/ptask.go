@@ -3,9 +3,10 @@ package ptask
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 const (
@@ -36,8 +37,11 @@ type PTask struct {
 	t2     time.Time
 }
 
-func GetPTaskFromURLQueries(r *http.Request, l *log.Logger) (*PTask, error) {
-	l.Println("Evaluating url queries")
+func GetPTaskFromURLQueries(r *http.Request, l *zap.Logger) (*PTask, error) {
+	l.Info("Entering GetPTaskFromURLQueries")
+	defer func() {
+		l.Info("Exiting GetPTaskFromURLQueries")
+	}()
 
 	prd := r.URL.Query().Get("period")
 	if err := period(prd).isValid(); err != nil {
@@ -67,6 +71,7 @@ func GetPTaskFromURLQueries(r *http.Request, l *log.Logger) (*PTask, error) {
 		err = fmt.Errorf("unsupported t2: %w", err)
 		return nil, err
 	}
+
 	return NewPTask(prd, location, t1, t2), nil
 }
 
