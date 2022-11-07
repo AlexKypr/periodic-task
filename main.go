@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"inaccess/handlers"
-	"inaccess/utils"
 	"net/http"
 	"os"
 	"os/signal"
+	"periodictask/handlers"
+	"periodictask/utils"
 	"syscall"
 	"time"
 

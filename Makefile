@@ -11,12 +11,12 @@ app_addr := 127.0.0.1
 endif
 
 image:
-	docker build -t inacc-server:latest .
+	docker build -t ptask-server:latest .
 
 run:
-	docker run --name inacc-server -p $(app_addr):$(app_port):$(app_port) inacc-server:latest --addr=$(app_addr) --port=$(app_port)
+	docker run --name ptask-server -p $(app_addr):$(app_port):$(app_port) ptask-server:latest --addr=$(app_addr) --port=$(app_port)
     
 start:
-	docker start -i inacc-server
+	docker start -i ptask-server
 
 .PHONY: image run start

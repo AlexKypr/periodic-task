@@ -85,17 +85,23 @@ func NewPTask(prd string, tz *time.Location, t1, t2 time.Time) *PTask {
 }
 
 func (p *PTask) GetPTasks() ([]string, error) {
-	t1Limit := roundUp(p.t1, p.period)
+	t1Limit, err := roundUp(p.t1, p.period)
+	if err != nil {
+		return nil, err
+	}
+
 	ts := []string{}
-	runningTs := t1Limit
-	for runningTs.Before(p.t2) {
+	for runningTs := t1Limit; runningTs.Before(p.t2); {
 		ts = append(ts, runningTs.UTC().Format(tsFormat))
-		runningTs = addPeriod(runningTs, p.period)
+		runningTs, err = addPeriod(runningTs, p.period)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return ts, nil
 }
 
-func roundUp(t time.Time, p period) time.Time {
+func roundUp(t time.Time, p period) (time.Time, error) {
 	switch p {
 	case year:
 		t = t.AddDate(1, -int(t.Month()), 0)
@@ -107,12 +113,19 @@ func roundUp(t time.Time, p period) time.Time {
 		t = t.AddDate(0, 0, 1)
 		t = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 	case hour:
-		t = t.Round(time.Hour)
+		temp := t.Round(time.Hour)
+		if temp.Before(t) {
+			t = temp.Add(time.Hour)
+		} else {
+			t = temp
+		}
+	default:
+		return time.Time{}, errors.New("invalid period value")
 	}
-	return t
+	return t, nil
 }
 
-func addPeriod(ts time.Time, p period) time.Time {
+func addPeriod(ts time.Time, p period) (time.Time, error) {
 	switch p {
 	case hour:
 		ts = ts.Add(time.Hour)
@@ -122,6 +135,8 @@ func addPeriod(ts time.Time, p period) time.Time {
 		ts = ts.AddDate(0, 1, 0)
 	case year:
 		ts = ts.AddDate(1, 0, 0)
+	default:
+		return time.Time{}, errors.New("invalid period value")
 	}
-	return ts
+	return ts, nil
 }

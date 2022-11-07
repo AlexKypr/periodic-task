@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"fmt"
-	"inaccess/ptask"
-	"inaccess/utils"
 	"net/http"
+	"periodictask/ptask"
+	"periodictask/utils"
 
 	"go.uber.org/zap"
 )
