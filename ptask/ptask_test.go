@@ -1,7 +1,6 @@
 package ptask
 
 import (
-	"bytes"
 	"errors"
 	"net/http"
 	"testing"
@@ -55,18 +54,22 @@ func TestGetPTaskFromURLQueries(t *testing.T) {
 		{"/ptlist?period=1h&tz=UTCS&t1=20211009T102900Z&t2=20211009T151500Z"},
 	}
 
-	l, _ := zap.NewProduction()
+	l, err := zap.NewProduction()
+	require.NoError(t, err)
+
 	for _, test := range happytests {
-		var s1 string
-		r, _ := http.NewRequest(http.MethodGet, test.url, bytes.NewReader([]byte(s1)))
+		r, err := http.NewRequest(http.MethodGet, test.url, nil)
+		require.NoError(err)
+
 		got, err := GetPTaskFromURLQueries(r, l)
 		require.NoError(t, err)
 		require.Equal(t, test.want, got)
 	}
 
 	for _, test := range badtests {
-		var s1 string
-		r, _ := http.NewRequest(http.MethodGet, test.url, bytes.NewReader([]byte(s1)))
+		r, err := http.NewRequest(http.MethodGet, test.url, nil)
+		require.NoError(err)
+
 		got, err := GetPTaskFromURLQueries(r, l)
 		require.Empty(t, got)
 		require.Error(t, err)
